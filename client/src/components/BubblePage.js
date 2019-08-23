@@ -34,6 +34,7 @@ const BubblePage = () => {
     getData()
 
   }, [])
+ 
 
   return (
     <>
