@@ -18,20 +18,21 @@ const ColorList = ({ colors, updateColors, getData }) => {
     setColorToEdit(color);
   };
   //shared state solution for put request, otherwise can just make another get request with getData
-  const newestColor = editedColor => {
-    updateColors(colors.map(color => (
-      color.id === editedColor.id ? editedColor : color
-    )));
-  }
+  // const newestColor = editedColor => {
+  //   updateColors(colors.map(color => (
+  //     color.id === editedColor.id ? editedColor : color
+  //   )));
+  // }
 
   const saveEdit = e => {
     e.preventDefault();
     axiosWithAuth().put(`http://localhost:5000/api/colors/${colorToEdit.id}`, colorToEdit)
     .then(res => {
       console.log(res)
-      // getData()
-      newestColor(res.data)
+      getData()
+      // newestColor(res.data)
       setColorToEdit(initialColor)
+      setEditing(!editing)
     })
     .catch(err => console.log("there was an error in put", err))
     // Make a put request to save your updated color
@@ -44,6 +45,7 @@ const ColorList = ({ colors, updateColors, getData }) => {
     .then(res => {
       console.log("res in the post", res)
       updateColors(res.data)
+      setNewColor(initialColor)
     })
     .catch(err => console.log("there was an err in post", err))
   }
@@ -62,6 +64,7 @@ const ColorList = ({ colors, updateColors, getData }) => {
       console.log(res)
       const updatedArray = colors.filter(color => color.id !== res.data)
       updateColors(updatedArray)
+      setEditing(false)
     })
     .catch(err => console.log("there was an error in delete", err.response))
   };
@@ -91,9 +94,9 @@ const ColorList = ({ colors, updateColors, getData }) => {
           <label>
             color name:
             <input
-              onChange={e => {console.log(e.target.value)
+              onChange={e =>
                 setColorToEdit({ ...colorToEdit, color: e.target.value })
-              }}
+              }
               value={colorToEdit.color}
             />
           </label>
@@ -140,8 +143,11 @@ const ColorList = ({ colors, updateColors, getData }) => {
         </label>
         <button>add new color</button>
       </form>
-    </div>
+      </div>
+   
   );
 };
 
 export default ColorList;
+
+ 
